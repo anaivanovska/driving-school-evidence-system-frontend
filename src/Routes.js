@@ -1,16 +1,16 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Redirect} from 'react-router-dom';
+import {Switch, BrowserRouter, Route, Redirect} from 'react-router-dom';
 import LoginPage from './components/login/LoginPage';
 import UserProfile from "./components/userProfile/UserProfile";
 
-const Routes = () => {
-    return (
-        <Router>
-            <Route path={"/login"} component={LoginPage}/>
-            <Route path={"/profile"} component={UserProfile}/>
+const Routes = () => (
+    <BrowserRouter >
+        <Switch>
+            <Route exact path={"/login"} component={LoginPage}/>
+            <Route exact path={"/profile"} component={UserProfile}/>
             <Redirect from={"/"} to={"/login"}/>
-        </Router>
-    )
-};
+        </Switch>
+    </BrowserRouter>
+);
 
 export default Routes;

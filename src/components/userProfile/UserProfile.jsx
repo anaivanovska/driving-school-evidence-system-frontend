@@ -1,33 +1,21 @@
 import React, {Component} from 'react';
-import {fetchUserByUsername} from "../../actions/index";
 import { connect } from 'react-redux';
+import {fetchUserByUsername} from "../../actions/index";
 
-class UserProfile extends Component{
-    constructor(props) {
-        super(props);
-        console.log(props);
-        this.state = {
-        };
-    }
+const UserProfile = (props) => {
+    console.log(props)
+        return (
+            <div>
+                {props.user.email}
+            </div>
+        )
+};
 
-    componentWillMount() {
-        const email = this.props.history.location.state;
-        const user = this.props.fetchUserData(email);
-        this.setState((state, props) => {
-            return {user: user};
-        });
-    }
-    render()
-    {
-        return {
-
-        }
-    }
-}
 
 const mapStateToProps = (state, ownProps) => {
+    console.log(state);
     return {
-        user: state.user
+        user: state.userData
     }
 };
 

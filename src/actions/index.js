@@ -4,7 +4,7 @@ import {SERVER_URL} from "../Constants";
 
 export const fetchUserByUsername = (username) => {
     return (dispatch) => {
-        return axiosAuthenticated().get(`${SERVER_URL}/api/user?email=${username}`)
+        return axiosAuthenticated().get(`${SERVER_URL}/api/user/byEmail?email=${username}`)
             .then(response => {
                 dispatch(setUserData(response.data, FETCH_USER_BY_USERNAME));
             })
@@ -16,7 +16,7 @@ export const fetchUserByUsername = (username) => {
 
 export const fetchUserById = (id) => {
     return (dispatch) => {
-        return axiosAuthenticated(.get(`${SERVER_URL}/api/user?id=${id}`)
+        return axiosAuthenticated().get(`${SERVER_URL}/api/user?id=${id}`)
             .then(response => {
                 dispatch(setUserData(response.data, FETCH_USER_BY_ID));
             })
@@ -27,8 +27,9 @@ export const fetchUserById = (id) => {
 };
 
 const setUserData = (data, type) => {
+    console.log("Action called")
     return {
         type: type,
-        user: data
+        data: data
     }
 };
