@@ -5,11 +5,13 @@ import {Link} from 'react-router-dom';
 
 const LoginPage = (props) => {
     return (
-        <div>
+      <div className="row justify-content-center align-items-center">
+        <div className="card col-4">
             <LoginForm {...props.history}/>
             <br/>
-            <Link to='/forgotPassword' className="text-light">Forgot password ? </Link>
+            <Link to='/forgotPassword' >Forgot password ? </Link>
         </div>
+      </div>
     )
 };
 

@@ -1,15 +1,14 @@
 import  React, {Component} from 'react';
-import { FormGroup } from 'reactstrap';
+import {Form, FormGroup, Button} from 'react-bootstrap';
 import * as Yup from 'yup';
 import axios from 'axios';
-import {Button, InputGroup, InputGroupAddon} from 'reactstrap';
 import {saveToken} from "../../service/UserAuthentication";
 import {SERVER_URL} from "../../Constants";
-import {fetchUserByUsername} from "../../actions/index";
+import {fetchUserByUsername} from "../../actions/user";
 import { connect } from 'react-redux';
 
 
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Field, ErrorMessage } from 'formik';
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -30,13 +29,7 @@ const validationSchema = Yup.object().shape({
 });
 
 class LoginForm extends React.Component {
-    constructor(props) {
-        super(props);
-        console.log(props);
-    }
-    componentWillUnmount() {
-        console.log("component will unmount");
-    }
+
     handleSubmit = (values, { setSubmitting, resetForm}) => {
         const {push, fetchUserByUsername} = this.props;
         setSubmitting(true);
@@ -49,8 +42,8 @@ class LoginForm extends React.Component {
                 setSubmitting(false);
                 saveToken(response);
                 const {username } = values;
+                fetchUserByUsername(username);
                 push("/profile", {username});
-                //fetchUserByUsername(username);
                 resetForm();
             })
             .catch(error => {
@@ -69,23 +62,22 @@ class LoginForm extends React.Component {
                 render={(formProps) => {
                     return(
                     <Form onSubmit={formProps.handleSubmit}>
-                        <div>
-                            <Field
-                                type="email"
-                                name="username"
-                                placeholder="Email Address"
-                            />
-                            <ErrorMessage name="username" component="div"/>
-                        </div>
-                       <div>
-                           <Field
-                               type="password"
-                               name="password"
-                               placeholder="Password"
-                           />
-                           <ErrorMessage name="password" component="div"/>
-                       </div>
-                        <button type="submit" disabled={formProps.isSubmitting}> Submit Form </button>
+                        <FormGroup>
+                            <Form.Label>Username</Form.Label>
+                            <Field className="form-control"  type="email"
+                                           name="username"
+                                           placeholder="Username"/>
+
+                            <ErrorMessage className="text-danger" name="username" component="div"/>
+                        </FormGroup>
+                       <FormGroup>
+                           <Form.Label>Password</Form.Label>
+                           <Field className="form-control" type="password"
+                                          name="password"
+                                          placeholder="Password"/>
+                           <ErrorMessage className="text-danger" name="password" component="div"/>
+                       </FormGroup>
+                        <Button variant="primary" type="submit" disabled={formProps.isSubmitting}> Submit Form </Button>
                     </Form>);
                     }
                 }
@@ -94,4 +86,7 @@ class LoginForm extends React.Component {
     }
 }
 
-export default LoginForm;
+export default connect(
+    null,
+    mapDispatchToProps
+)(LoginForm);

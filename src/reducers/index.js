@@ -1,18 +1,11 @@
 import {FETCH_USER_BY_ID, FETCH_USER_BY_USERNAME} from "../actions/types";
 import {combineReducers} from 'redux';
-
-const userDataReducer = (state={},  action) =>{
-    switch(action.type) {
-        case FETCH_USER_BY_USERNAME:
-        case FETCH_USER_BY_ID:
-            return action.data;
-        default:
-            return state;
-    }
-};
+import userReducer from "./userReducer";
+import categoryReducer from "./categoryReducer";
 
 const rootReducer = combineReducers({
-    userData: userDataReducer
+    user: userReducer,
+    categoryList: categoryReducer
 });
 
 export default rootReducer;
