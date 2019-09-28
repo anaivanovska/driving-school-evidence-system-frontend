@@ -8,33 +8,38 @@ class CategoryList extends React.Component {
     componentWillMount() {
         this.props.getAllCategories();
     }
+
     handleOnClick = () => {
         this.props.push("/profile/newCategory");
     };
+
     render() {
         const {categories} = this.props;
-        if(categories.length == 0 || categories == undefined) {
-            return (
-                <Card>
-                    <Card.Header>
-                        Категории
-                    </Card.Header>
-                    <Card.Body>
-                        <p>
-                            Не се пронајдени категории.
-                        </p>
-                        <p>
-                            За да додадете нова категорија притиснете на копчето
-                            <br/>
-                            <Button variant="secondary" onClick={this.handleOnClick}> Нова категорија </Button>
-                        </p>
-                    </Card.Body>
-                    <Card.Footer/>
-                </Card>
-            )
-        } else {
-            return (
-                <div>
+        return (
+            <Card>
+                <Card.Header>
+                    Категории
+                </Card.Header>
+                {(categories.length == 0 || categories == undefined) &&
+                <Card.Body>
+                    <p>
+                        Не се пронајдени категории.
+                    </p>
+                    <p>
+                        За да додадете нова категорија притиснете на копчето
+                    </p>
+                </Card.Body>
+                }
+                {categories.length > 0 &&
+                <Card.Body>
+                    <table className="table" style={{border: 0}}>
+                        <thead>
+                            <tr>
+                                <th scope="col-2">Име</th>
+                                <th scope="col-4">Цена</th>
+                                <th scope="col-4"></th>
+                            </tr>
+                        </thead>
                     {
                         categories.map(category => {
                             return (
@@ -42,10 +47,14 @@ class CategoryList extends React.Component {
                             );
                         })
                     }
-                </div>
-            );
-        }
-
+                    </table>
+                </Card.Body>
+                }
+                <Card.Footer>
+                    <Button variant="secondary" onClick={this.handleOnClick}> Нова категорија </Button>
+                </Card.Footer>
+            </Card>
+        )
     }
 }
 
