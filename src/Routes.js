@@ -1,15 +1,18 @@
 import React from 'react';
 import {Switch, BrowserRouter, Route, Redirect} from 'react-router-dom';
 import LoginPage from './components/login/LoginPage';
-import UserProfile from "./components/userProfile/UserProfile";
+import UserProfile from "./components/user/UserProfile";
 import CreateNewCategory from "./components/category/CreateNewCategory";
+import CreateNewUser from "./components/user/CreateNewUser";
+import UserData from "./components/user/UserData";
 
 const Routes = () => (
     <BrowserRouter >
         <Switch>
+            <Route exact path={"/profile/:role/newCategory"} component={CreateNewCategory}/>
+            <Route exact path={"/profile/:role/newUser/:userType"} component={CreateNewUser}/>
+            <Route exact path={"/profile/:role"} component={UserProfile}/>
             <Route exact path={"/login"} component={LoginPage}/>
-            <Route exact path={"/profile"} component={UserProfile}/>
-            <Route exact path={"/profile/newCategory"} component={CreateNewCategory}/>
             <Redirect from={"/"} to={"/login"}/>
         </Switch>
     </BrowserRouter>

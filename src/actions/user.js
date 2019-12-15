@@ -1,12 +1,13 @@
-import {FETCH_USER_BY_ID, FETCH_USER_BY_USERNAME} from "./types";
+import {
+    FETCH_USER_BY_ID, FETCH_USER_BY_USERNAME,FETCH_INSTRUCTORS, FETCH_CANDIDATES,
+    CREATE_NEW_CANDIDATE, CREATE_NEW_INSTRUCTOR
+} from "./types";
 import {axiosAuthenticated} from "../service/UserAuthentication";
-import {SERVER_URL} from "../Constants";
-
+import {Roles, SERVER_URL} from "../Constants";
 export const fetchUserByUsername = (username) => {
     return (dispatch) => {
         return axiosAuthenticated().get(`${SERVER_URL}/api/user/byEmail?email=${username}`)
             .then(response => {
-                console.log("DISPATCH")
                 dispatch(setUserData(response.data, FETCH_USER_BY_USERNAME));
             })
             .catch(error =>{
@@ -27,8 +28,26 @@ export const fetchUserById = (id) => {
     }
 };
 
+
+export const fetchUsersWithRole = (role, pageNumber) => {
+    return (dispatch) => {
+        return axiosAuthenticated().get(`${SERVER_URL}/api/user/all/${role}?page=${pageNumber}`)
+            .then(response => {
+                console.log("Fetching users");
+                console.log(response.data);
+                if(role === Roles.instructor) {
+                    console.log("fetciing instructors");
+                    return dispatch(setUserData(response.data, FETCH_INSTRUCTORS));
+                } else {
+                    return dispatch(setUserData(response.data, FETCH_CANDIDATES));
+                }
+            })
+            .catch(error => {
+                throw(error);
+            })
+    }
+};
 const setUserData = (data, type) => {
-    console.log("Action called")
     return {
         type: type,
         data: data

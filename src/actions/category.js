@@ -1,6 +1,6 @@
 import {
-    CREATE_NEW_CATEGORY, EDIT_CATEGORY, FETCH_ALL_CATEGORIES, FETCH_USER_BY_USERNAME,
-    REMOVE_CATEGORY
+    CREATE_NEW_CATEGORY, EDIT_CATEGORY,
+    FETCH_ALL_CATEGORIES, REMOVE_CATEGORY
 } from "./types";
 import {axiosAuthenticated} from "../service/UserAuthentication";
 import {SERVER_URL} from "../Constants";

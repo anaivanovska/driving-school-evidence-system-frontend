@@ -10,7 +10,8 @@ class CategoryList extends React.Component {
     }
 
     handleOnClick = () => {
-        this.props.push("/profile/newCategory");
+        const {push, location} = this.props;
+        push(location.pathname + "/newCategory");
     };
 
     render() {
@@ -20,7 +21,7 @@ class CategoryList extends React.Component {
                 <Card.Header>
                     Категории
                 </Card.Header>
-                {(categories.length == 0 || categories == undefined) &&
+                {(categories == undefined || categories.length == 0) &&
                 <Card.Body>
                     <p>
                         Не се пронајдени категории.
@@ -40,13 +41,15 @@ class CategoryList extends React.Component {
                                 <th scope="col-4"></th>
                             </tr>
                         </thead>
-                    {
-                        categories.map(category => {
-                            return (
-                                <Category key={category.name} {...category} />
-                            );
-                        })
-                    }
+                        <tbody>
+                            {
+                                categories.map(category => {
+                                    return (
+                                        <Category key={category.name} {...category} />
+                                    );
+                                })
+                            }
+                        </tbody>
                     </table>
                 </Card.Body>
                 }

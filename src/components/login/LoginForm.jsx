@@ -1,8 +1,8 @@
-import  React, {Component} from 'react';
+import  React from 'react';
 import {Form, FormGroup, Button} from 'react-bootstrap';
 import * as Yup from 'yup';
 import axios from 'axios';
-import {saveToken} from "../../service/UserAuthentication";
+import {getAuthority, saveAuthorities, saveToken} from "../../service/UserAuthentication";
 import {SERVER_URL} from "../../Constants";
 import {fetchUserByUsername} from "../../actions/user";
 import { connect } from 'react-redux';
@@ -33,6 +33,7 @@ class LoginForm extends React.Component {
     handleSubmit = (values, { setSubmitting, resetForm}) => {
         const {push, fetchUserByUsername} = this.props;
         setSubmitting(true);
+        console.log("Handle submit");
         axios.post(`${SERVER_URL}/login`,
             {
                 username: values.username,
@@ -41,9 +42,11 @@ class LoginForm extends React.Component {
             .then(response => {
                 setSubmitting(false);
                 saveToken(response);
+                saveAuthorities(response);
                 const {username } = values;
+                console.log("Authority:" + getAuthority());
                 fetchUserByUsername(username);
-                push("/profile", {username});
+                push("/profile/"+getAuthority());
                 resetForm();
             })
             .catch(error => {
@@ -52,6 +55,7 @@ class LoginForm extends React.Component {
                 alert('Invalid username or password. Please try again');
             });
     };
+
 
     render() {
         return(

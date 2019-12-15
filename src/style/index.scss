@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css?family=Bitter|Source+Sans+Pro');
+
+%portrait_background_gradient {
+  background: #5e6e7b;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #eef2f3, #5e6e7b);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #eef2f3, #5e6e7b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+$default_font-family: 'Source Sans Pro', sans-serif;
+$default_font_size: 18px;
+$dark_color: #5e6e7b;
+$light_color: #EEF2F3;
+
+%dark_background {
+  background-color: $dark_color;
+}
+%dark_font_color {
+  color: $dark_color;
+}
+%light_font_color {
+  color: $light_color;
+}
+%light_background {
+  background-color: $light_color;
+}
+%light_background_hover {
+  background-color: #ffe6cc;
+}
+.defaultFont{
+  font-size: $default_font_size;
+  font-family: $default_font-family;
+}
+
+.background {
+  @extend %dark_background;
+}
+
+%centered_translation {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 3%;
+  -ms-transform: translateX(-50%) translateY(-50%);
+  -webkit-transform: translate(-50%,-50%);
+  transform: translate(-50%,-50%);
+}
+
+.darkLink {
+  color: $dark_color;
+}
+
+
+.fullScreen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+}
+
+.profile-picture {
+  width: 100%;
+  height: 100%;
+}
+
+.profile-backround {
+  position: absolute;
+  @extend %light_background;
+  width: 100%;
+  height: 38%;
+  border:  2px solid $dark_color;
+}
+
+
+.custom-pagination {
+  @extend %light_background;
+  display: inline-block;
+  bottom: 0;
+  padding:0;
+  list-style: none;
+  margin-top: 2%;
+  li {
+    padding: 0.5em;
+    border: 1px solid lighten($dark_color, 30%);
+    float: left;
+    &:hover {
+      @extend %light_background_hover;
+      color: darkorange;
+    };
+    &:active{
+      background-color: darkorange;
+    };
+    a {
+      @extend %dark_font_color;
+      font-size: 22px;
+      padding: 0.20em;
+      text-decoration: none;
+      &:hover {
+        color: darken(darkorange, 10%);
+        text-decoration: none;
+      };
+      &:active {
+        @extend %light_font_color;
+        font-weight: bold;
+      }
+    }
+  }
+}
+

@@ -1,6 +1,8 @@
-import {FETCH_USER_BY_USERNAME, FETCH_USER_BY_ID} from "../actions/types";
+import {
+    FETCH_USER_BY_USERNAME, FETCH_USER_BY_ID,FETCH_CANDIDATES, FETCH_INSTRUCTORS, CREATE_NEW_CANDIDATE, CREATE_NEW_INSTRUCTOR
+} from "../actions/types";
 
-const userReducer = (state={},  action) =>{
+export const userReducer = (state={},  action) =>{
     switch(action.type) {
         case FETCH_USER_BY_USERNAME:
         case FETCH_USER_BY_ID:
@@ -10,4 +12,23 @@ const userReducer = (state={},  action) =>{
     }
 };
 
-export default userReducer;
+const initialUsersState = {
+    users: {},
+    instructors: {},
+    candidates: {}
+
+};
+export const usersPageReducer = (state = initialUsersState, action) => {
+    switch (action.type) {
+        case CREATE_NEW_INSTRUCTOR:
+        case FETCH_INSTRUCTORS:
+            state.instructors = action.data;
+            return {...state };
+        case CREATE_NEW_CANDIDATE:
+        case FETCH_CANDIDATES:
+            state.candidates = action.data;
+            return {...state };
+        default:
+            return state;
+    }
+};

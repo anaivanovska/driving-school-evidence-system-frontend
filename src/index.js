@@ -32,8 +32,8 @@ const loadFromLocalStorage = () => {
     }
 };
 const persistedState = loadFromLocalStorage();
-const composedEnhancers = compose ( applyMiddleware(thunk), composeWithDevTools());
-const store = createStore(rootReducer,persistedState, composedEnhancers);
+const composedEnhancers = compose(applyMiddleware(thunk), composeWithDevTools());
+const store = createStore(rootReducer, persistedState, composedEnhancers);
 store.subscribe(() => saveToLocalStorage(store.getState()));
 
 ReactDOM.render(

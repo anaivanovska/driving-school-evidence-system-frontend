@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch) => {
 class CreateNewCategory extends React.Component {
    handleSubmit = (values) => {
         this.props.createNewCategory(values);
-        this.handleClose();
+        this.handleClose()
     };
 
     handleClose = () => {
@@ -33,7 +33,7 @@ class CreateNewCategory extends React.Component {
     render() {
         return (
             <Modal.Dialog>
-                <Modal.Header closeButton>
+                <Modal.Header closeButton={this.handleClose}>
                     <Modal.Title>Креирај нова категорија</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -42,7 +42,6 @@ class CreateNewCategory extends React.Component {
                         onSubmit={this.handleSubmit}
                         validationSchema ={validationSchema}
                         render={(formProps) => {
-                            console.log(formProps);
                             return(
                                 <Form onSubmit={formProps.handleSubmit}>
                                     <FormGroup>
