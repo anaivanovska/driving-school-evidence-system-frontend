@@ -15,3 +15,4 @@ export const FETCH_ALL_CATEGORIES = "fetch_all_categories";
 export const CREATE_NEW_CATEGORY = "create_new_category";
 export const EDIT_CATEGORY = "edit_category";
 export const REMOVE_CATEGORY ="remove_category";
+export const FETCH_USERS_WITH_ROLE_GROUPED_BY_CATEGORY = "fetch_users_with_role_grouped_by-category";

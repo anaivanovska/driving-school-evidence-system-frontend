@@ -1,6 +1,6 @@
 import {
-    FETCH_USER_BY_ID, FETCH_USER_BY_USERNAME,FETCH_INSTRUCTORS, FETCH_CANDIDATES,
-    CREATE_NEW_CANDIDATE, CREATE_NEW_INSTRUCTOR
+    FETCH_USER_BY_ID, FETCH_USER_BY_USERNAME, FETCH_INSTRUCTORS, FETCH_CANDIDATES,
+    CREATE_NEW_CANDIDATE, CREATE_NEW_INSTRUCTOR, FETCH_USERS_WITH_ROLE_GROUPED_BY_CATEGORY
 } from "./types";
 import {axiosAuthenticated} from "../service/UserAuthentication";
 import {Roles, SERVER_URL} from "../Constants";
@@ -47,6 +47,18 @@ export const fetchUsersWithRole = (role, pageNumber) => {
             })
     }
 };
+
+export const fetchUsersWithRoleGroupedByCategory = (role) => {
+    return (dispatch) => {
+        axiosAuthenticated().get(`${SERVER_URL}/api/userCategory/${role}/usersAndCategories`)
+            .then(response => {
+                return dispatch(setUserData(response.data, FETCH_USERS_WITH_ROLE_GROUPED_BY_CATEGORY));
+            })
+            .catch(error => {
+                alert("Настана грешка")
+            });
+    }
+}
 const setUserData = (data, type) => {
     return {
         type: type,
