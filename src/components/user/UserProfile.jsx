@@ -5,6 +5,7 @@ import CategoryList from "../category/CategoryList";
 import UserList from "./UserList";
 import UserData from "./UserData"
 import {Roles} from "../../Constants";
+import VehicleList from "../vehicle/VehicleList";
 
 const UserProfile = ({location, history, user}) => {
         return (
@@ -15,6 +16,7 @@ const UserProfile = ({location, history, user}) => {
                 <div className="col-4">
                     <CategoryList {...history}/>
                     <UserList role={Roles.instructor} history={history} location={location} />
+                    <VehicleList {...history} />
                 </div>
     </div>)
 };

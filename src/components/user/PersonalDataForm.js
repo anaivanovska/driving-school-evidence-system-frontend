@@ -117,7 +117,7 @@ const PersonalDataForm = ({userType, goToNext, setUser, handleClose}) => {
                                 <DatePicker
                                     selected={formProps.values.birthDate}
                                     dateFormat="dd.MM.yyyy"
-                                    className="form-ontrol"
+                                    className="form-control"
                                     name="birthDate"
                                     onChange={date => formProps.setFieldValue('birthDate', date)}
                                 />

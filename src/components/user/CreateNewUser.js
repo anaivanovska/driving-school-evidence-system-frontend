@@ -16,6 +16,7 @@ class CreateNewUser extends React.Component {
             activeStep: 0
         };
     }
+
     handleClose = () => {
         this.props.history.goBack();
     };

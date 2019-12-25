@@ -22,7 +22,8 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class CreateNewCategory extends React.Component {
-   handleSubmit = (values) => {
+
+    handleSubmit = (values) => {
         this.props.createNewCategory(values);
         this.handleClose()
     };
