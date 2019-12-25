@@ -17,8 +17,8 @@ const initialUsersState = {
     users: {},
     instructors: {},
     candidates: {},
-    usersByCategory: {}
-
+    usersByCategory: {},
+    userByID: {}
 };
 export const usersPageReducer = (state = initialUsersState, action) => {
     switch (action.type) {
@@ -32,6 +32,9 @@ export const usersPageReducer = (state = initialUsersState, action) => {
             return {...state };
         case FETCH_USERS_WITH_ROLE_GROUPED_BY_CATEGORY:
             state.usersByCategory = action.data;
+            return {...state};
+        case FETCH_USER_BY_ID:
+            state.userByID = action.data;
             return {...state};
         default:
             return state;

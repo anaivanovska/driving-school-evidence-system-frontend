@@ -24,3 +24,15 @@ export const FETCH_ALL_VEHICLES = "fetch_all_vehicles";
 //Driver Licence
 export const CREATE_NEW_DRIVER_LICENCE = "create_new_driver_licence";
 export const FETCH_ALL_DRIVER_LICENCES_FOR_USER = "fetch_all_driver_licences_user";
+
+//Medical certificate
+export const CREATE_NEW_MEDICAL_CERTIFICATE = "create_new_medical_certificate";
+export const FETCH_MEDICAL_CERTIFICATE = "fetch_medical_certificate";
+
+//Trial Test
+export const CREATE_NEW_TRIAL_TEST = "create_new_trial_test";
+export const FETCH_ALL_TRIAL_TESTS_FOR_DRIVING_COURSE = "fetch_all_trial_tests_for_driving_course";
+
+//Qualification
+export const CREATE_NEW_QUALIFICATION = "create_new_qualification_for_driving_course";
+export const FETCH_ALL_QUALIFICATIONS_FOR_DRIVING_COURSE = "fetch_all_qualifications_for_driving_course";

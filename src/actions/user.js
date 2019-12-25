@@ -18,7 +18,7 @@ export const fetchUserByUsername = (username) => {
 
 export const fetchUserById = (id) => {
     return (dispatch) => {
-        return axiosAuthenticated().get(`${SERVER_URL}/api/user?id=${id}`)
+        return axiosAuthenticated().get(`${SERVER_URL}/api/user/${id}`)
             .then(response => {
                 dispatch(setUserData(response.data, FETCH_USER_BY_ID));
             })

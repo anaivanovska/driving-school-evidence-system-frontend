@@ -8,4 +8,5 @@ export const Roles = {
     candidate: "CANDIDATE",
     admin: "ADMIN"
 };
+export const QUALIFICATION_TYPES = ["Теорија", "Пракса"];
 export const DEFAULT_PAGE_SIZE = 5;

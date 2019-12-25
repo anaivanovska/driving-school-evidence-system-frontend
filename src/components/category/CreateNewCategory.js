@@ -12,7 +12,7 @@ const initialValues = {
 
 const validationSchema = Yup.object().shape({
     name: Yup.string().required('Името на категоријата е задолжително'),
-    price: Yup.number('Цената мора да е составена само од цифри').required('Цената за категоријата е задолжителна')
+    price: Yup.testNumber('Цената мора да е составена само од цифри').required('Цената за категоријата е задолжителна')
 });
 
 const mapDispatchToProps = (dispatch) => {
