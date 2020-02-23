@@ -1,41 +1,43 @@
 import React from 'react';
-import {Form, Button} from 'react-bootstrap'
+import {Form} from 'react-bootstrap'
 
 
-class CheckboxContainer extends React.Component {
+const CheckboxContainer  = ({options, save, selected} ) => {
 
-    constructor(props) {
-        super(props);
-        const {options} = props;
-        this.state = {selectedOptions: []};
+   const handleSelect = selectedOption => {
 
-    }
+        let selectedOptions = [...selected];
+        if (selectedOptions === undefined) {
+            selectedOptions = [];
+        }
 
-    handleSelect = selectedOption => {
-        const {selectedOptions} = this.state;
         const index = selectedOptions.indexOf(selectedOption);
-        if(index === -1) {
+        console.log("Index");
+        console.log(index);
+        if (index === -1) {
+            console.log("prev")
+            console.log(selectedOptions)
             selectedOptions.push(selectedOption);
+            console.log("Push")
+            console.log(selectedOptions)
         } else {
             selectedOptions.splice(index, 1);
         }
-        this.setState({selectedOptions});
+
+        console.log("selected options");
+        console.log(selectedOptions);
+        save(selectedOptions);
     };
 
-    render() {
-        const {options, save} = this.props;
-        const {selectedOptions} = this.state;
-        return (
+    return (
             <div>
                 {options.map((option) => {
-                    return <Form.Group controlId="formBasicCheckbox" onClick={() => this.handleSelect(option)}>
-                                <Form.Check type="checkbox" label={option} />
+                    return <Form.Group controlId="formBasicCheckbox" >
+                                <Form.Check type="checkbox" label={option} checked ={selected !== undefined && selected.includes(option)} onChange={() => handleSelect(option)}/>
                             </Form.Group>
                 })}
-                <Button type="primary" onClick={() => save(selectedOptions)}> Зачувај </Button>
             </div>
-        );
-    }
+    );
 
-}
+};
 export default CheckboxContainer;

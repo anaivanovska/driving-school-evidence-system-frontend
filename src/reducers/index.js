@@ -5,6 +5,8 @@ import {driverLicenceReducer} from "./driverLicenceReducer";
 import {medicalCertificateReducer} from "./medicalCertificateReducer";
 import {trialTestReducer} from "./trialTestReducer";
 import {qualificationReducer} from "./qualificationReducer";
+import {drivingCourseReducer} from "./drivingCourseReducer";
+import {instructorCategoryReducer} from "./instructorCategoryReducer";
 
 const rootReducer = combineReducers({
     user: userReducer,
@@ -14,7 +16,9 @@ const rootReducer = combineReducers({
     driverLicenceForUserList: driverLicenceReducer,
     medicalCertificateForUser: medicalCertificateReducer,
     trialTestList: trialTestReducer,
-    qualificationList: qualificationReducer
+    qualificationList: qualificationReducer,
+    drivingCourseList: drivingCourseReducer,
+    categoriesForInstructor: instructorCategoryReducer
 });
 
 export default rootReducer;

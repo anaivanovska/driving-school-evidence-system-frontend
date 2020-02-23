@@ -1,0 +1,23 @@
+import {FETCH_ALL_CATEGORIES_FOR_INSTRUCTOR} from "./types";
+import {axiosAuthenticated} from "../service/UserAuthentication";
+import {SERVER_URL} from "../Constants";
+
+export const fetchAllCategoriesForInstructor = (id) => {
+    return (dispatch) => {
+        return axiosAuthenticated().get(`${SERVER_URL}/api/instructorCategory/allCategories/${id}`)
+            .then(response => {
+                dispatch(setInstructorCategoryData(response.data, FETCH_ALL_CATEGORIES_FOR_INSTRUCTOR));
+            })
+            .catch(error =>{
+                throw(error)
+            });
+    }
+};
+
+
+const setInstructorCategoryData = (data, type) => {
+    return {
+        type: type,
+        data: data
+    }
+};

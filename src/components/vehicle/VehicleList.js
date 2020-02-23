@@ -1,50 +1,80 @@
 import React from 'react';
-import { connect} from 'react-redux';
-import {fetchAllVehicles} from "../../actions/vehicle";
-import Vehicle from "./Vehicle";
-import {Card, Button} from 'react-bootstrap'
+import {connect} from 'react-redux';
+import {fetchAllVehiclesPagination} from "../../actions/vehicle";
+import Vehicle from "./VehicleRow";
+import {Button} from 'react-bootstrap'
+import '../../index.css'
+import {DEFAULT_PAGE_SIZE, Roles, SERVER_URL} from "../../Constants";
+import Pagination from 'react-js-pagination';
+import pageHOC from "../custom/pageHOC";
+
 
 class VehicleList extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            activePage: 1
+        }
+    }
+
+    fetchVehicles = () => {
+        const {activePage} = this.state;
+        this.props.getVehicles(activePage - 1);
+    };
+
+    handlePageChange = (pageNumber) => {
+        if (this.state.activePage != pageNumber) {
+            this.setState(
+                {
+                    activePage: pageNumber
+                },
+                () => {
+                    this.fetchVehicles();
+                }
+            )
+        }
+    };
+
     componentWillMount() {
-        this.props.getAllVehicles();
+        this.fetchVehicles();
     }
 
     handleOnClick = () => {
-        const {push, location} = this.props;
-        push(location.pathname + "/newVehicle");
+        const {history, location} = this.props;
+        history.push(location.pathname + "/new");
     };
 
+
     render() {
-        const {vehicles} = this.props;
+        const {activePage} = this.state;
+        const {role} = this.props.match.params;
+        const {totalElements, content} = this.props.vehicles;
+        console.log("Vehicle list");
+        console.log(role)
         return (
-            <Card>
-                <Card.Header>
-                    Возила
-                </Card.Header>
-                {(vehicles == undefined || vehicles.length == 0) &&
-                <Card.Body>
+            <div>
+                {(totalElements == undefined || totalElements == 0) &&
+                <div>
                     <p>
                         Не се пронајдени возила.
                     </p>
-                    <p>
-                        За да додадете ново возило притиснете на копчето
-                    </p>
-                </Card.Body>
+                </div>
                 }
-                {vehicles.length > 0 &&
-                <Card.Body>
-                    <table className="table" style={{border: 0}}>
+                {totalElements > 0 &&
+                <div>
+                    <table className="table">
                         <thead>
                         <tr>
-                            <th scope="col-2">Марка</th>
-                            <th scope="col-4">Тип</th>
-                            <th scope="col-4">Регистрација</th>
-                            <th scope="col-4">Дата на регистрирање</th>
+                            <th scope="col">Марка</th>
+                            <th scope="col">Тип</th>
+                            <th scope="col">Регистрација</th>
+                            <th scope="col">Дата на регистрирање</th>
                         </tr>
                         </thead>
                         <tbody>
                         {
-                            vehicles.map(vehicle => {
+                            content.map(vehicle => {
                                 return (
                                     <Vehicle key={vehicle.registrationNumber} {...vehicle} />
                                 );
@@ -52,27 +82,38 @@ class VehicleList extends React.Component {
                         }
                         </tbody>
                     </table>
-                </Card.Body>
+                </div>
                 }
-                <Card.Footer>
-                    <Button variant="secondary" onClick={this.handleOnClick}> Ново возило </Button>
-                </Card.Footer>
-            </Card>
+                <div className="card-footer row justify-content-between align-items-center">
+                    {(totalElements !== undefined && totalElements > 0) &&
+                    <Pagination
+                        innerClass="custom-pagination col-3"
+                        activePage={activePage}
+                        onChange={this.handlePageChange}
+                        totalItemsCount={totalElements}
+                        itemsCountPerPage={DEFAULT_PAGE_SIZE}
+                    />}
+                    <br/>
+                    {role === Roles.admin &&
+                    <Button variant="secondary" onClick={this.handleOnClick}> Ново возило </Button>}
+                </div>
+            </div>
         )
     }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({vehicleList}) => {
     return {
-        vehicles: state.vehicleList
+        vehicles: vehicleList.pagination
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getAllVehicles: () => dispatch(fetchAllVehicles())
+        getVehicles: (pageNumber) => dispatch(fetchAllVehiclesPagination(pageNumber))
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(VehicleList)
+const VehicleListScene = pageHOC(connect(mapStateToProps, mapDispatchToProps)(VehicleList));
+export default VehicleListScene;
 

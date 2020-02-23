@@ -11,3 +11,40 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.evening-night-gradient {
+  background: #005AA7 !important;/* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FFFDE4, #005AA7,  #006080) !important;  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FFFDE4, #005AA7) !important;/* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.h-100vh {
+  height: 100vh;
+}
+
+.h-46vh {
+  height: 17%;
+}
+
+.h-50px {
+  height: 50px;
+}
+.card-img-overlay {
+  background-color: rgba(#000, 0.4);
+}
+
+.sidenav---sidenav-nav---3tvij > .sidenav---sidenav-navitem---uwIJ- > .sidenav---navitem---9uL5T .sidenav---navicon---3gCRo + .sidenav---navtext---1AE_f {
+  display: block !important;
+}
+
+.blue-background {
+  background:  #006080 !important;
+}
+
+.ml-10 {
+  margin-left: 25%;
+}
+
+.h-60px {
+  height: 60px;
+}

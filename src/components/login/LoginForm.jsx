@@ -6,6 +6,7 @@ import {getAuthority, saveAuthorities, saveToken} from "../../service/UserAuthen
 import {SERVER_URL} from "../../Constants";
 import {fetchUserByUsername} from "../../actions/user";
 import { connect } from 'react-redux';
+import '../../index.css'
 
 
 import { Formik, Field, ErrorMessage } from 'formik';
@@ -63,7 +64,7 @@ class LoginForm extends React.Component {
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={this.handleSubmit}
-                render={(formProps) => {
+c                render={(formProps) => {
                     return(
                     <Form onSubmit={formProps.handleSubmit}>
                         <FormGroup>

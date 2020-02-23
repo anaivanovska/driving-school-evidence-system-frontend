@@ -1,5 +1,5 @@
 
-import {CREATE_NEW_QUALIFICATION, FETCH_ALL_QUALIFICATIONS_FOR_DRIVING_COURSE} from "../actions/types";
+import { CREATE_NEW_QUALIFICATION, FETCH_ALL_QUALIFICATIONS_FOR_DRIVING_COURSE} from "../actions/types";
 
 export const qualificationReducer = (state= [], action) => {
     switch (action.type) {

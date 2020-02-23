@@ -3,15 +3,13 @@ import {connect} from 'react-redux';
 import {fetchUsersWithRole} from "../../actions/user";
 import Pagination from 'react-js-pagination';
 import UserRow from './UserRow';
-import {Card, Modal} from 'react-bootstrap';
-import {DEFAULT_PAGE_SIZE, Roles} from "../../Constants";
+import {DEFAULT_PAGE_SIZE, Roles, SERVER_URL} from "../../Constants";
 import '../../style/index.scss';
-import UserData from "./UserData";
+import {axiosAuthenticated} from "../../service/UserAuthentication";
+import pageHOC from "../custom/pageHOC";
 
 const initialState = {
-    activePage: 1,
-    selectedUser: null
-};
+    activePage: 1};
 
 class UserList extends React.Component {
     constructor(props) {
@@ -19,18 +17,18 @@ class UserList extends React.Component {
         this.state = initialState;
     }
 
-    componentDidMount = () => {
-       this.fetchUsers();
+    componentWillMount() {
+        this.fetchUsers();
     };
 
     fetchUsers = () => {
-        const {role} = this.props;
+        const role = this.props.match.params.userType;
         const {activePage} = this.state;
-        this.props.getUsers(role.toUpperCase(), activePage - 1);
+        this.props.getUsers(role, activePage - 1);
     };
 
     handlePageChange = (pageNumber) => {
-        if(this.state.activePage != pageNumber) {
+        if (this.state.activePage != pageNumber) {
             this.setState(
                 {
                     activePage: pageNumber
@@ -43,77 +41,86 @@ class UserList extends React.Component {
     };
 
     addNewUser = () => {
-        const {history, location, role} = this.props;
-        history.push(location.pathname + "/newUser/"+role.toLowerCase());
+        const {history, location} = this.props;
+        const pathname = location.pathname.replace('all', '');
+        history.push(pathname + "new");
     };
 
-    toggleUserData = (user) => {
-        this.setState({
-                selectedUser: user
-            });
+    showUserData = (user) => {
+       const {history, location} = this.props;
+       history.push(location.pathname + "/" + user.id)
+    };
+
+    handleRemove = (userId) => {
+        axiosAuthenticated().delete(`${SERVER_URL}/api/user/remove/${userId}`)
+            .then(response => {
+                this.fetchUsers();
+            })
+            .catch(error => {
+                throw(error);
+            })
     };
 
     render() {
-        const {activePage, selectedUser} =  this.state;
-        const {allUsers, role} = this.props;
-        const usersList = role === Roles.instructor ? allUsers.instructors : allUsers.candidates;
+        const {activePage} = this.state;
+        const {allUsers} = this.props;
+        const {role, userType} = this.props.match.params;
+        const usersList = userType === Roles.instructor ? allUsers.instructors : allUsers.candidates;
         const {totalElements, content} = usersList;
         return (
 
-            <div>
-                <Card>
-                    <Card.Header>
-                        {role === Roles.instructor ? 'Инструктори' : 'Кандидати'}
-                    </Card.Header>
-                    <Card.Body>
-                       {(totalElements === undefined || totalElements === 0) &&
-                            <div>
-                                Не постојат корисници.
-                            </div>
+            <div className="col-8 ml-10 mt-5">
+                <div>
+                    <div>
+                        {(totalElements === undefined || totalElements === 0) &&
+                        <div>
+                            Не постојат корисници.
+                        </div>
                         }
                         {(totalElements !== undefined && totalElements > 0) &&
-                            <table>
-                                <thead>
-                                <tr>
-                                    <td>Име</td>
-                                    <td>Презиме</td>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {
-                                    content.map(user => {
-                                        return (
-                                            <UserRow key={user.embg} user={user} handleOnClick={this.toggleUserData}/>
-                                        );
-                                    })
-                                }
-                                </tbody>
-                            </table>
+                        <table className="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <th scope="col">Име</th>
+                                <th scope="col">Презиме</th>
+                                <th scope="col">Матичен број</th>
+                                <th scope="col">Дата на раѓање</th>
+                                <th scope="col">Место на раѓање</th>
+                                <th scope="col">Место на живеење</th>
+                                <th scope="col">Телефонски број</th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                content.map(user => {
+                                    return (
+                                        <UserRow key={user.embg} user={user} handleOnClick={this.showUserData}
+                                                 handleRemove={(userId) => this.handleRemove(userId)}/>
+                                    );
+                                })
+                            }
+                            </tbody>
+                        </table>
 
                         }
-                    </Card.Body>
-                    <Card.Footer>
+                    </div>
+                    <div className="card-footer w-100 row justify-content-between align-items-center">
+                        {(totalElements !== undefined && totalElements > 0) &&
                         <Pagination
-                            innerClass="custom-pagination"
+                            innerClass="custom-pagination col-3"
                             activePage={activePage}
                             onChange={this.handlePageChange}
                             totalItemsCount={totalElements}
                             itemsCountPerPage={DEFAULT_PAGE_SIZE}
-                        />
-                        <button onClick={() => this.addNewUser()}>Додај</button>
-                    </Card.Footer>
-                </Card>
-                <Modal show={selectedUser != null} onHide={() => this.toggleUserData(null)}>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Податоци за корисникот: </Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {selectedUser != null && <UserData user={selectedUser}/>}
-                    </Modal.Body>
-                    <Modal.Footer>
-
-                    </Modal.Footer>
-                </Modal>
+                        />}
+                        <br/>
+                        {role === Roles.admin &&
+                        <button className="btn btn-secondary btn-lg h-50px col-1" onClick={() => this.addNewUser()}>
+                            Додај</button>}
+                    </div>
+                </div>
             </div>
         );
     }
@@ -131,4 +138,5 @@ const mapStateToProps = ({userList}) => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserList);
+const UserListScene = pageHOC(connect(mapStateToProps, mapDispatchToProps)(UserList));
+export default UserListScene;

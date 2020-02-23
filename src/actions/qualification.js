@@ -1,6 +1,6 @@
 import {axiosAuthenticated} from "../service/UserAuthentication";
 import {SERVER_URL} from "../Constants";
-import {CREATE_NEW_QUALIFICATION, FETCH_ALL_QUALIFICATIONS_FOR_DRIVING_COURSE} from "./types";
+import {CREATE_NEW_DRIVING_COURSE, FETCH_ALL_QUALIFICATIONS_FOR_DRIVING_COURSE} from "./types";
 
 export const createNewQualification = (qualification, drivingCourseId) => {
     return (dispatch) => {
@@ -8,7 +8,7 @@ export const createNewQualification = (qualification, drivingCourseId) => {
             .then(response => {
                 console.log("Created qualification");
                 console.log(response);
-                dispatch(setQualificationData(response.data, CREATE_NEW_QUALIFICATION));
+                dispatch(setQualificationData(response.data, CREATE_NEW_DRIVING_COURSE));
             })
             .catch(error => {
                 throw(error)

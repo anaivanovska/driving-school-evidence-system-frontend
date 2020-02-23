@@ -1,28 +1,19 @@
 import React from 'react';
-import {Modal, Form, FormGroup, Button} from 'react-bootstrap';
-import { connect } from 'react-redux';
-import {Formik, Field, ErrorMessage} from 'formik';
-import * as Yup from 'yup';
+import {Button, Form, FormGroup, Modal} from 'react-bootstrap';
 import {createNewDriverLicence} from "../../actions/driverLicence";
 import {fetchAllCategories} from "../../actions/category";
-
-const initialValues = {
-    examinationDate: new Date()
-};
-
-const validationSchema = Yup.object().shape({
-    examinationDate: Yup.date().required('Датумот на возачката дозвола е задолжително поле')
-});
+import RadioButtonsContainer from "../custom/RadioButtonsContainer";
+import {connect} from "react-redux";
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        createNewDriverLicence: (driverLicence) => dispatch(createNewDriverLicence(driverLicence)),
+        createNewDriverLicence: (driverLicence, userId) => dispatch(createNewDriverLicence(driverLicence, userId)),
         fetchAllCategories: () => dispatch(fetchAllCategories())
     }
 };
 
 const mapStateToProps = ({categoryList}) => {
-    const categoryNames = categoryList.map(category => category.name);
+    const categoryNames = categoryList.list.map(category => category.name);
     return {
         categories: categoryNames
     }
@@ -32,10 +23,12 @@ class CreateNewDriverLicence extends React.Component {
 
     constructor(props) {
         super(props);
+        const {driverLicence} = props;
         this.state = {
-            selectedCategory: '',
+            selectedCategory: driverLicence.hasOwnProperty('categoryName') ? driverLicence.categoryName : '',
             categoryErrorText: 'Изборот на категоријата е задолжителен',
-            showError: false
+            showError: false,
+            examinationDate: driverLicence.hasOwnProperty('examinationDate') ? driverLicence.examinationDate : new Date()
         };
     }
 
@@ -43,79 +36,81 @@ class CreateNewDriverLicence extends React.Component {
         this.props.fetchAllCategories();
     };
 
-    handleSubmit = (values) => {
-        const driverLicence = {...values};
-        const {categoryName}  = this.state;
-        if (categoryName === '') {
-            this.setState({ showError: true});
+    handleSubmit = () => {
+        const {selectedCategory, examinationDate} = this.state;
+        const {driverLicence} = this.props;
+        const driverLicenceTmp = {
+            categoryName: selectedCategory,
+            examinationDate: examinationDate
+        };
+
+        if (driverLicence.hasOwnProperty('id')) {
+            driverLicenceTmp.id = driverLicence.id;
+        }
+
+        if (selectedCategory === '') {
+            this.setState({showError: true});
         } else {
-            this.setState({ showError: false});
-            driverLicence.catagoryName = categoryName;
-            this.props.createNewDriverLicence(driverLicence);
-            this.handleClose();
+            this.setState({showError: false});
+            const {userId} = this.props;
+            this.props.createNewDriverLicence(driverLicenceTmp, userId);
+            this.props.toggleModal();
         }
     };
 
-    handleClose = () => {
-        this.props.history.goBack();
-    };
 
-    handleSelectCategory = (categoryName) => {
+    setCategoryName = (categoryName) => {
         this.setState({
-            categoryName: categoryName,
+            selectedCategory: categoryName,
             showError: false
-        })
+        });
     };
 
 
-    getCategories = () => {
-        return this.props.categories.map(category => {
-             return <Form.Check inline label= {category} type="radio" onClick={() => this.handleSelectCategory(category)}/>
-
-        })
+    setExaminationDate = (date) => {
+        this.setState({
+            examinationDate: date
+        });
     };
+
 
     render() {
-        const {categoryErrorText, showError} = this.state;
+        const {categoryErrorText, showError, selectedCategory, examinationDate} = this.state;
         return (
-            <Modal.Dialog>
-                <Modal.Header closeButton={this.handleClose}>
+            <Modal show={this.props.show}>
+                <Modal.Header>
                     <Modal.Title>Нова возачка дозвола </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Formik
-                        initialValues = {initialValues}
-                        onSubmit={this.handleSubmit}
-                        validationSchema ={validationSchema}
-                        render={(formProps) => {
-                            return(
-                                <Form onSubmit={formProps.handleSubmit}>
-                                    <FormGroup>
-                                        <Form.Label>Категорија: </Form.Label>Form.Label>
-                                        {this.getCategories()}
-                                        <span className="text-danger" visible={showError} > {categoryErrorText} </span>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <Form.Label>Дата: </Form.Label>
-                                        <Field className="form-control" type="date"
-                                               name="examinationDate"/>
-                                        <ErrorMessage className="text-danger" name="price" component="div"/>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <div className="p-3 row justify-content-end">
-                                            <Button variant="primary" type="submit">Зачувај</Button>
-                                            <Button variant="danger"  onClick={this.handleClose}>Затвори</Button>
-                                        </div>
-                                    </FormGroup>
-                                </Form>);
-                        }
-                        }
-                    />
+                    <Form onSubmit={this.handleSubmit}>
+                        <FormGroup>
+                            <Form.Label>Изберете категорија и возило: </Form.Label>
+                            <RadioButtonsContainer options={this.props.categories}
+                                                   setSelected={(selected) => this.setCategoryName(selected)}
+                                                   selected={selectedCategory}
+                                                   name="categoryName"/>
+                            <span className="text-danger" visible={showError}> {categoryErrorText} </span>
+                        </FormGroup>
+                        <FormGroup>
+                            <Form.Label>Датум на издавање: </Form.Label>
+                            <Form.Control className="form-control"
+                                          type="date"
+                                          name="examinationDate"
+                                          value={examinationDate}
+                                          onChange={(event) => this.setExaminationDate(event.target.value)}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <div className="p-3 row justify-content-end">
+                                <Button variant="primary" type="submit" onClick={this.handleSubmit}>Зачувај</Button>
+                                <Button variant="danger" onClick={this.props.toggleModal}>Затвори</Button>
+                            </div>
+                        </FormGroup>
+                    </Form>
                 </Modal.Body>
-            </Modal.Dialog>
-
-        )
+            </Modal>
+        );
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateNewDriverLicence)
+export default connect(mapStateToProps, mapDispatchToProps)(CreateNewDriverLicence);

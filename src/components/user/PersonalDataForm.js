@@ -1,26 +1,9 @@
 import React from 'react';
 import {Form, FormGroup, Button} from 'react-bootstrap';
 import {Formik, Field, ErrorMessage} from 'formik';
-import DatePicker from 'react-datepicker';
 import * as Yup from 'yup';
 import {Roles, SERVER_URL} from "../../Constants";
 import {axiosAuthenticated} from "../../service/UserAuthentication";
-
-
-const initialValues = {
-    firstName: '',
-    lastName: '',
-    parentName: '',
-    embg: '',
-    identityCardNumber: '',
-    proffesion: '',
-    birthDate: new Date(),
-    birthPlace: '',
-    address: '',
-    phoneNumber: '',
-    email: '',
-    gender: ''
-};
 
 const validationSchema = Yup.object().shape({
     firstName: Yup.string().required('Името е задолжително'),
@@ -29,25 +12,55 @@ const validationSchema = Yup.object().shape({
     embg: Yup.string().required('Матичен број е задолжително поле')
 });
 
-const PersonalDataForm = ({userType, goToNext, setUser, handleClose}) => {
+const PersonalDataForm = ({user, userType, goBack, goToProfile}) => {
+
+    const initialValues = {
+        firstName: user.firstName || '',
+        lastName: user.lastName ||  '',
+        parentName: user.parentName || '',
+        embg: user.embg || '',
+        identityCardNumber: user.identityCardNumber || '',
+        profession: user.profession || '',
+        birthDate:user.birthDate || new Date(),
+        birthPlace: user.birthPlace || '',
+        address: user.address || '',
+        phoneNumber: user.phoneNumber || '',
+        email: user.email || '',
+        gender: user.gender || ''
+    };
+
 
     const handleSubmit = (values) => {
-       const user = {...values};
-       user.roles = [
-           userType
-        ];
-       console.log(user);
-        axiosAuthenticated().post(`${SERVER_URL}/api/user/new`, user)
+        let url = SERVER_URL;
+        const id = user.id;
+        if (id !== undefined) {
+            url += "/api/user/edit";
+            values.id = id;
+        } else {
+            url += "/api/user/new/" + userType;
+        }
+
+        axiosAuthenticated().post(`${url}`, values)
             .then(response => {
-                setUser(response.data);
-                goToNext();
+                console.log(response);
+                if (response.status === 202) {
+                    alert("Корисникот со емаил " + values.email  + " веќе постои. Но додадена му е улогата " + userType === Roles.instructor ? "инструктор" : "кандидат");
+                    goToProfile(response.data.id)
+                } else if(response.status === 400) {
+                    alert("Корисникот со емаил " + values.email + " веќе постои. Доколу сакате да промените некои од инфорамациите за овој корисник направеде едитирање.")
+                    goBack();
+                } else {
+                    goToProfile(response.data.id);
+                }
+
             })
             .catch(error => {
-                alert(`Корисникот со матичен број ${user.embg} веќе постои. `);
-                handleClose();
+                alert(`Настана грешка при креирањето на корисникот. Обидете се повторно `);
+                goBack();
             });
 
     };
+
     return (
         <Formik
                 initialValues = {initialValues}
@@ -107,20 +120,16 @@ const PersonalDataForm = ({userType, goToNext, setUser, handleClose}) => {
                             <FormGroup>
                                 <Form.Label>Професија: </Form.Label>
                                 <Field className="form-control" type="text"
-                                       name="proffesion"
+                                       name="profession"
                                        placeholder="Инструктор"/>
 
-                                <ErrorMessage className="text-danger" name="proffesion" component="div"/>
+                                <ErrorMessage className="text-danger" name="profession" component="div"/>
                             </FormGroup>
                             <FormGroup>
                                 <Form.Label>Дата на раѓање: </Form.Label>
-                                <DatePicker
-                                    selected={formProps.values.birthDate}
-                                    dateFormat="dd.MM.yyyy"
+                                <Field type="date"
                                     className="form-control"
-                                    name="birthDate"
-                                    onChange={date => formProps.setFieldValue('birthDate', date)}
-                                />
+                                    name="birthDate"/>
 
                                 <ErrorMessage className="text-danger" name="birthDate" component="div"/>
                             </FormGroup>
@@ -161,7 +170,7 @@ const PersonalDataForm = ({userType, goToNext, setUser, handleClose}) => {
                             <FormGroup>
                                 <div className="p-3 row justify-content-end">
                                     <Button variant="primary" type="submit">Зачувај</Button>
-                                    <Button variant="danger"  onClick={handleClose}>Затвори</Button>
+                                    <Button variant="danger"  onClick={goBack}>Назад</Button>
                                 </div>
                             </FormGroup>
                         </Form>)}}/>
